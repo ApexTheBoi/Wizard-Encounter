@@ -6,6 +6,7 @@ public class Wizard {
 	private String name;
 	private int health;
 	private int mana;
+	private boolean isBracing;
 
 	//Ailments
 	private boolean isBurned;
@@ -14,6 +15,7 @@ public class Wizard {
 
 	//Game fundamentals
 	private Scanner input;
+	private boolean hasDecided;
 	private boolean playerHasActed; // <-----
 	private boolean enemyHasActed;  // <-----maybe I can comebine the two into one "acted" boolean?
 	private int randomNum;
@@ -55,7 +57,7 @@ public class Wizard {
 		if(this.getMana() >= 8) {
 			this.mana -= 8;
 			this.health+= 15;
-			System.out.println(this.getName() + "heals 15 health at the expense of 8 mana.");
+			System.out.println(this.getName() + " heals 15 health at the expense of 8 mana.");
 		}
 
 		else {
@@ -68,9 +70,13 @@ public class Wizard {
 		System.out.println(this.getName() + " gains 12 mana.");
 	}
 
-	/*public void manabrace(){
-
-	}*/
+	public void manabrace(){
+        if(this.mana >= 8){
+            this.mana-=8;
+            this.isBracing = true;
+            System.out.println(this.getName() + " begins bracing with manabrace.");
+        }
+	}
 
 	public void useMana(int n) {
 		this.mana -= n;
@@ -78,7 +84,27 @@ public class Wizard {
 	}
 
 	public void dealDamage(int d) {
-		this.health -= d;
+		int dmgtaken = d; 
+		
+		if(this.isFrostbitten == true){ //if they have frostbite
+		    dmgtaken = (d*2);//double damage from frostbite
+		    if(this.isBracing == true){
+		        dmgtaken = (int)(dmgtaken * .80); //take 80% of the attack instead
+		        this.isBracing = false;
+		        System.out.println(this.getName() + " braces!");
+		    }
+		    System.out.println(this.getName() + "takes " + dmgtaken + " damage from the frostbite!");
+		    this.isFrostbitten = false; //change it to false, removing the effect
+		}
+		
+		else{ //if they DONT have frostbite
+		    if(this.isBracing == true){
+		        dmgtaken = (int)(dmgtaken*.80);
+		        this.isBracing = false;
+		        System.out.println(this.getName() + " braces!");
+		    }
+		}
+		this.health -= dmgtaken;
 		System.out.println(this.getName() + " takes " + d + " damage!");
 	}
 
@@ -94,28 +120,35 @@ public class Wizard {
 			}//enemy's turn
 
 			else {
-				System.out.println("Please choose an option : ");
-				System.out.println("1 - Attack\n2 - Heal\n3 - Focus\n4 - Manabrace\n0 - Get Info on Abilities"); //15 health for 8mp
-				int choice = input.nextInt();
-				if(choice == 1) {
-					playerAttack(wizard);
-				}
+			    hasDecided = false;
+			    while(hasDecided != true){
+				    System.out.println("Please choose an option : ");
+				    System.out.println("1 - Attack\n2 - Heal\n3 - Focus\n4 - Manabrace\n0 - Get Info on Abilities"); //15 health for 8mp
+				    int choice = input.nextInt();
+				    if(choice == 1) {
+					    hasDecided = true;
+					    playerAttack(wizard);
+				    }
 
-				else if(choice == 2) {
-					heal();
-				}
+				    else if(choice == 2) {
+					    hasDecided = true;
+					    heal();
+				    }
 
-				else if(choice == 3) {
-					focus();
-				}
+				    else if(choice == 3) {
+					    hasDecided = true;
+					    focus();
+				    }
 
-				//else if(choice == 4){
+				    else if(choice == 4){
+                        hasDecided = true;
+                        manabrace();
+				    }
 
-				//}
-
-				else if(choice == 0) {
-					printChoiceInfo();
-				}
+				    else if(choice == 0) {
+					    printChoiceInfo();
+				    }
+			    }
 			}
 		}
 
@@ -134,11 +167,13 @@ public class Wizard {
 		System.out.println("-----------------------------");
 	}
 
-	public void printChoiceInfo() {
+	public void printChoiceInfo() {;
+	    System.out.println("-----------------------------");
 		System.out.println("1 - Attack | Deal damage to the opponent.");
 		System.out.println("2 - Heal | Heal 10 health at the expense of 8 mana.");
 		System.out.println("3 - Focus | Regain 12 mana.");
 		System.out.println("4 - Manabrace | Mitigate ~20% of the next attack at the expense of 8 mana.");
+	    System.out.println("-----------------------------");
 	}
 
 	public void checkStatus() {
