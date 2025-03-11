@@ -16,6 +16,7 @@ public class Wizard {
 	private Scanner input;
 	private boolean playerHasActed; // <-----
 	private boolean enemyHasActed;  // <-----maybe I can comebine the two into one "acted" boolean?
+	private int randomNum;
 
 
 	public Wizard() { //Only ever used for enemy wizard initialization.
@@ -42,6 +43,10 @@ public class Wizard {
 		return name;
 	}
 
+	public int getHealth() {
+		return health;
+	}
+
 	public int getMana() {
 		return mana;
 	}
@@ -51,10 +56,45 @@ public class Wizard {
 		System.out.println(this.getName() + " used " + n + " mana! (" + this.getMana() + " mana remaining.)");
 	}
 
-	public void turn() { //the main method used to initiate turns.
-		input = new Scanner(System.in); //to get the choices
-		checkStatus(); //do all the ticks / effects at the start
+	public void dealDamage(int d) {
+		this.health -= d;
+		System.out.println(this.getName() + " takes " + d + " damage!");
+	}
 
+	public void turn(Wizard wizard) { //the main method used to initiate turns.
+
+		checkStatus(); //do all the ticks / effects at the start
+		if(this.isThunderstruck == false) {
+			input = new Scanner(System.in); //to get the choices
+
+			if(this.getName().equals("Logrith"))
+			{
+				enemyAttack(wizard); //passing in the player's wizard
+			}//enemy's turn
+
+			else {
+				System.out.println("Please choose an option : ");
+				System.out.println("1 - Attack\n2 - Heal\n3 - Focus (Regain Mana)\n4 - Heal (15 health for 8 mana)");
+				int choice = input.nextInt();
+				if(choice == 1) {
+					playerAttack(wizard);
+				}
+			}
+		}
+
+		else {
+			System.out.println(this.getName() + " is paralyzed. Cannot act.\nThe paralysis wears off.");
+			isThunderstruck = false;
+			System.out.println("-----------------------------");
+		}
+
+
+	}
+
+	public void printInfo(Wizard w) { //passes in the enemy
+		System.out.println(this.getName() + " : " + this.getHealth() + " Health | " + this.getMana() + " Mana.");//prints player's Information
+		System.out.println(w.getName() + " : " + w.getHealth() + " Health | " + w.getMana() + " Mana");
+		System.out.println("-----------------------------");
 	}
 
 	public void checkStatus() {
@@ -68,11 +108,11 @@ public class Wizard {
 		}
 
 		else if(isThunderstruck) {
-			System.out.println("Thunder is paralyzing you.\nTurn is skipped.");
+			System.out.println("Thunder is paralyzing " + this.getName() + ".\nTurn is skipped.");
 		}
 	}
 
-	public void playerAttack() {
+	public void playerAttack(Wizard wizard) {
 
 		input = new Scanner(System.in); //creating a scanner for the user input.
 
@@ -85,17 +125,17 @@ public class Wizard {
 			int choice = input.nextInt(); //Getting the user input.
 			System.out.println("-----------------------------");
 			if(choice==1) {
-				fireball();
+				fireball(wizard);
 				playerHasActed = true;
 			}
 
 			else if(choice == 2) {
-				blizzard();
+				blizzard(wizard);
 				playerHasActed = true;
 			}
 
 			else if(choice == 3) {
-				thunderstrike();
+				thunderstrike(wizard);
 				playerHasActed = true;
 			}
 
@@ -108,23 +148,23 @@ public class Wizard {
 		System.out.println("-----------------------------");
 	}
 
-	public void enemyAttack() {
+	public void enemyAttack(Wizard w) {//parameter is the target
 		while(enemyHasActed == false) {
 
 			int choice = (int)(Math.random() * 3) + 1; //generates 1-3 (1,2,3)
 
 			if(choice == 1) {
-				fireball();
+				fireball(w);
 				enemyHasActed = true;
 			}
 
 			else if(choice ==2) {
-				blizzard();
+				blizzard(w);
 				enemyHasActed = true;
 			}
 
 			else if(choice == 3) {
-				thunderstrike();
+				thunderstrike(w);
 				enemyHasActed = true;
 			}
 
@@ -145,10 +185,11 @@ public class Wizard {
 		System.out.println("-----------------------------\n-----------------------------");
 	}
 
-	public void fireball() {
+	public void fireball(Wizard wizard) { //target is getting hit
 		if(this.getMana() >= 4) {
 			System.out.println(this.getName() + " casts fireball!"); //this works for some reason
 			this.useMana(4);
+			wizard.dealDamage(8);
 		}
 
 		else {
@@ -156,24 +197,30 @@ public class Wizard {
 		}
 	}
 
-	public void blizzard() {
+	public void blizzard(Wizard wizard) {
 		if(this.getMana() >= 8) {
 			System.out.println(this.getName() + " casts blizzard!");
 			this.useMana(8);
+			wizard.dealDamage(12);
 		}
 		else {
 			System.out.println(this.getName() + " attempted to cast blizard, but failed due to lack of mana. (" + this.getMana() + " mana remaining.)");
 		}
 	}
 
-	public void thunderstrike() {
+	public void thunderstrike(Wizard wizard) {
 		if(this.getMana() >= 14) {
+			randomNum = (int)(Math.random() * 100) + 1; //just initializing so it doesnt yell at me later.
 			System.out.println(this.getName() + " casts thunderstrike!");
 			this.useMana(14);
+			wizard.dealDamage(20);
+			if(randomNum <= 40) {
+				wizard.isThunderstruck = true;
+				System.out.println("Critical hit! Thunderstruck has been applied to " + wizard.getName() + "!");
+			}
 		}
 
 		else {
 			System.out.println(this.getName() + " attempted to cast thunderstrike, but failed due to lack of mana. (" + this.getMana() + " mana remaining.)");
 		}
 	}
-}
