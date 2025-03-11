@@ -14,11 +14,20 @@ public class Main
 		
 		System.out.println("-------------------\nYour enemy is " + enemy.getName() + ". Good luck, " + name + "\n-------------------");
 		
-		while(failsafe < 4){
+		while(player.getHealth() > 0 && enemy.getHealth() > 0 && failsafe < 15){
 		    player.turn(enemy); //player's turn. Passes in the target
 		    enemy.turn(player); //enemy's turn. Passes in the target
 		    failsafe+=1;
 		    player.printInfo(enemy); //to get the information.
+		    if(enemy.getHealth() <= 0){
+		        System.out.print("YOU WIN!");
+		        break;
+		    }
+		    else if(player.getHealth() <= 0){
+		        System.out.print("YOU LOSE!");
+		        break;
+		    }
+		    
 		}
 	}
 }
