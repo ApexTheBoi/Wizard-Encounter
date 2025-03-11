@@ -51,6 +51,27 @@ public class Wizard {
 		return mana;
 	}
 
+	public void heal() {
+		if(this.getMana() >= 8) {
+			this.mana -= 8;
+			this.health+= 15;
+			System.out.println(this.getName() + "heals 15 health at the expense of 8 mana.");
+		}
+
+		else {
+			System.out.println(this.getName() + "failed to heal.");
+		}
+	}
+
+	public void focus() {
+		this.mana += 12;
+		System.out.println(this.getName() + " gains 12 mana.");
+	}
+
+	/*public void manabrace(){
+
+	}*/
+
 	public void useMana(int n) {
 		this.mana -= n;
 		System.out.println(this.getName() + " used " + n + " mana! (" + this.getMana() + " mana remaining.)");
@@ -74,10 +95,26 @@ public class Wizard {
 
 			else {
 				System.out.println("Please choose an option : ");
-				System.out.println("1 - Attack\n2 - Heal\n3 - Focus (Regain Mana)\n4 - Heal (15 health for 8 mana)");
+				System.out.println("1 - Attack\n2 - Heal\n3 - Focus\n4 - Manabrace\n0 - Get Info on Abilities"); //15 health for 8mp
 				int choice = input.nextInt();
 				if(choice == 1) {
 					playerAttack(wizard);
+				}
+
+				else if(choice == 2) {
+					heal();
+				}
+
+				else if(choice == 3) {
+					focus();
+				}
+
+				//else if(choice == 4){
+
+				//}
+
+				else if(choice == 0) {
+					printChoiceInfo();
 				}
 			}
 		}
@@ -95,6 +132,13 @@ public class Wizard {
 		System.out.println(this.getName() + " : " + this.getHealth() + " Health | " + this.getMana() + " Mana.");//prints player's Information
 		System.out.println(w.getName() + " : " + w.getHealth() + " Health | " + w.getMana() + " Mana");
 		System.out.println("-----------------------------");
+	}
+
+	public void printChoiceInfo() {
+		System.out.println("1 - Attack | Deal damage to the opponent.");
+		System.out.println("2 - Heal | Heal 10 health at the expense of 8 mana.");
+		System.out.println("3 - Focus | Regain 12 mana.");
+		System.out.println("4 - Manabrace | Mitigate ~20% of the next attack at the expense of 8 mana.");
 	}
 
 	public void checkStatus() {
@@ -224,3 +268,4 @@ public class Wizard {
 			System.out.println(this.getName() + " attempted to cast thunderstrike, but failed due to lack of mana. (" + this.getMana() + " mana remaining.)");
 		}
 	}
+}
