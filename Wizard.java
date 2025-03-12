@@ -57,10 +57,12 @@ public class Wizard {
 		if(this.getMana() >= 8) {
 			this.mana -= 8;
 			this.health+= 15;
+			System.out.println("-----------------------------");
 			System.out.println(this.getName() + " heals 15 health at the expense of 8 mana.");
 		}
 
 		else {
+		    System.out.println("-----------------------------");
 			System.out.println(this.getName() + "failed to heal.");
 		}
 	}
