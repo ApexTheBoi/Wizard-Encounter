@@ -67,13 +67,15 @@ public class Wizard {
 
 	public void focus() {
 		this.mana += 12;
-		System.out.println(this.getName() + " gains 12 mana.");
+		System.out.println("-----------------------------");
+		System.out.println(this.getName() + " focuses and gains 12 mana.");
 	}
 
 	public void manabrace(){
         if(this.mana >= 8){
             this.mana-=8;
             this.isBracing = true;
+            System.out.println("-----------------------------");
             System.out.println(this.getName() + " begins bracing with manabrace.");
         }
 	}
@@ -105,7 +107,7 @@ public class Wizard {
 		    }
 		}
 		this.health -= dmgtaken;
-		System.out.println(this.getName() + " takes " + d + " damage!");
+		System.out.println(this.getName() + " takes " + dmgtaken + " damage!");
 	}
 
 	public void turn(Wizard wizard) { //the main method used to initiate turns.
@@ -162,9 +164,11 @@ public class Wizard {
 	}
 
 	public void printInfo(Wizard w) { //passes in the enemy
-		System.out.println(this.getName() + " : " + this.getHealth() + " Health | " + this.getMana() + " Mana.");//prints player's Information
-		System.out.println(w.getName() + " : " + w.getHealth() + " Health | " + w.getMana() + " Mana");
-		System.out.println("-----------------------------");
+		if(this.getHealth() > 0 && w.getHealth() > 0){ //
+		    System.out.println(this.getName() + " : " + this.getHealth() + " Health | " + this.getMana() + " Mana.");//prints player's Information
+		    System.out.println(w.getName() + " : " + w.getHealth() + " Health | " + w.getMana() + " Mana");
+		    System.out.println("-----------------------------");
+		}
 	}
 
 	public void printChoiceInfo() {;
